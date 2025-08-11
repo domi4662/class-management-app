@@ -34,6 +34,15 @@ app.use((req, res, next) => {
   next();
 });
 
+// Test route for debugging
+app.get('/test', (req, res) => {
+  res.json({ 
+    message: 'Backend is working!',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
