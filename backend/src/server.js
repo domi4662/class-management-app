@@ -81,48 +81,27 @@ app.get('/', (req, res) => {
   });
 });
 
-// Try to load routes with error handling
+// Simplified route loading for debugging
 console.log('Attempting to load routes...');
 
+// Test with just auth routes first
 try {
   console.log('Loading auth routes...');
-  app.use('/api/auth', require('./routes/auth'));
-  console.log('✓ Auth routes loaded successfully');
+  const authRouter = require('./routes/auth');
+  console.log('Auth router loaded:', typeof authRouter);
+  console.log('Auth router stack:', authRouter.stack ? authRouter.stack.length : 'No stack');
+  
+  app.use('/api/auth', authRouter);
+  console.log('✓ Auth routes mounted successfully');
 } catch (error) {
   console.error('✗ Failed to load auth routes:', error.message);
+  console.error('Error stack:', error.stack);
 }
 
-try {
-  console.log('Loading user routes...');
-  app.use('/api/users', require('./routes/users'));
-  console.log('✓ User routes loaded successfully');
-} catch (error) {
-  console.error('✗ Failed to load user routes:', error.message);
-}
-
-try {
-  console.log('Loading class routes...');
-  app.use('/api/classes', require('./routes/classes'));
-  console.log('✓ Class routes loaded successfully');
-} catch (error) {
-  console.error('✗ Failed to load class routes:', error.message);
-}
-
-try {
-  console.log('Loading session routes...');
-  app.use('/api/sessions', require('./routes/sessions'));
-  console.log('✓ Session routes loaded successfully');
-} catch (error) {
-  console.error('✗ Failed to load session routes:', error.message);
-}
-
-try {
-  console.log('Loading assignment routes...');
-  app.use('/api/assignments', require('./routes/assignments'));
-  console.log('✓ Assignment routes loaded successfully');
-} catch (error) {
-  console.error('✗ Failed to load assignment routes:', error.message);
-}
+// Test a simple route directly
+app.get('/api/test-route', (req, res) => {
+  res.json({ message: 'Direct route test' });
+});
 
 console.log('Route loading completed.');
 
@@ -150,6 +129,8 @@ app.use('*', (req, res) => {
       'GET /debug',
       'GET /api/health',
       'GET /',
+      'GET /api/test-route',
+      'GET /api/auth/test',
       'POST /api/auth/register',
       'POST /api/auth/login'
     ]
@@ -167,6 +148,8 @@ app.listen(PORT, () => {
   console.log('- GET  /debug');
   console.log('- GET  /api/health');
   console.log('- GET  /');
+  console.log('- GET  /api/test-route');
+  console.log('- GET  /api/auth/test');
   console.log('- POST /api/auth/register');
   console.log('- POST /api/auth/login');
 }); 

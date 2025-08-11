@@ -5,6 +5,11 @@ const User = require('../models/User');
 
 const router = express.Router();
 
+// Test route to verify router is working
+router.get('/test', (req, res) => {
+  res.json({ message: 'Auth router is working!' });
+});
+
 // @route   POST /api/auth/register
 // @desc    Register a new user
 // @access  Public
