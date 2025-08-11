@@ -278,3 +278,4 @@ For questions or issues, please open a GitHub issue or contact the development t
 ---
 
 **🎯 Ready to deploy?** Run `./deploy.sh` to get started!
+# class-management-app
