@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const connectDB = require('./config/database');
+// const connectDB = require('./config/database');
 
 // Load environment variables
 dotenv.config();
@@ -9,8 +9,8 @@ dotenv.config();
 // Initialize express app
 const app = express();
 
-// Connect to MongoDB
-connectDB();
+// Connect to MongoDB - temporarily disabled for testing
+// connectDB();
 
 // CORS configuration for production
 const corsOptions = {
@@ -161,7 +161,7 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`MongoDB: ${process.env.MONGODB_URI ? 'Connected' : 'Not configured'}`);
+  console.log(`MongoDB: Temporarily disabled for testing`);
   console.log('Available routes:');
   console.log('- GET  /test');
   console.log('- GET  /debug');
