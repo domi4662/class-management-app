@@ -162,6 +162,43 @@ try {
   console.error('Error stack:', error.stack);
 }
 
+// Load additional routes
+try {
+  console.log('Loading classes routes...');
+  const classesRouter = require('./routes/classes');
+  app.use('/api/classes', classesRouter);
+  console.log('✓ Classes routes mounted successfully');
+} catch (error) {
+  console.error('✗ Failed to load classes routes:', error.message);
+}
+
+try {
+  console.log('Loading users routes...');
+  const usersRouter = require('./routes/users');
+  app.use('/api/users', usersRouter);
+  console.log('✓ Users routes mounted successfully');
+} catch (error) {
+  console.error('✗ Failed to load users routes:', error.message);
+}
+
+try {
+  console.log('Loading assignments routes...');
+  const assignmentsRouter = require('./routes/assignments');
+  app.use('/api/assignments', assignmentsRouter);
+  console.log('✓ Assignments routes mounted successfully');
+} catch (error) {
+  console.error('✗ Failed to load assignments routes:', error.message);
+}
+
+try {
+  console.log('Loading sessions routes...');
+  const sessionsRouter = require('./routes/sessions');
+  app.use('/api/sessions', sessionsRouter);
+  console.log('✓ Sessions routes mounted successfully');
+} catch (error) {
+  console.error('✗ Failed to load sessions routes:', error.message);
+}
+
 // Test a simple route directly
 app.get('/api/test-route', (req, res) => {
   res.json({ message: 'Direct route test' });
@@ -196,7 +233,13 @@ app.use('*', (req, res) => {
       'GET /api/test-route',
       'GET /api/auth/test',
       'POST /api/auth/register',
-      'POST /api/auth/login'
+      'POST /api/auth/login',
+      'GET /api/classes',
+      'POST /api/classes',
+      'GET /api/users',
+      'GET /api/users/role/:role',
+      'GET /api/assignments',
+      'GET /api/sessions'
     ]
   });
 });
@@ -216,4 +259,10 @@ app.listen(PORT, () => {
   console.log('- GET  /api/auth/test');
   console.log('- POST /api/auth/register');
   console.log('- POST /api/auth/login');
+  console.log('- GET  /api/classes');
+  console.log('- POST /api/classes');
+  console.log('- GET  /api/users');
+  console.log('- GET  /api/users/role/:role');
+  console.log('- GET  /api/assignments');
+  console.log('- GET  /api/sessions');
 }); 
