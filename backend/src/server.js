@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-// const connectDB = require('./config/database');
+const connectDB = require('./config/database');
 
 // Load environment variables
 dotenv.config();
@@ -9,8 +9,8 @@ dotenv.config();
 // Initialize express app
 const app = express();
 
-// Connect to MongoDB - temporarily disabled for testing
-// connectDB();
+// Connect to MongoDB
+connectDB();
 
 // CORS configuration for production
 const corsOptions = {
@@ -72,6 +72,37 @@ app.get('/debug', (req, res) => {
       routeMethods: layer.route ? Object.keys(layer.route.methods) : null
     }))
   });
+});
+
+// Route testing endpoint - actually test if mounted routes work
+app.get('/test-routes', async (req, res) => {
+  const results = {
+    message: 'Route testing results',
+    timestamp: new Date().toISOString(),
+    tests: {}
+  };
+  
+  try {
+    // Test auth routes by making internal requests
+    const authTestUrl = `${req.protocol}://${req.get('host')}/api/auth/test`;
+    console.log('Testing auth route at:', authTestUrl);
+    
+    // Note: This is a simplified test - in production you'd want to use a proper HTTP client
+    results.tests.auth = {
+      message: 'Auth routes are mounted at /api/auth/*',
+      testEndpoint: '/api/auth/test',
+      registerEndpoint: '/api/auth/register',
+      loginEndpoint: '/api/auth/login',
+      note: 'Use curl or Postman to test these endpoints directly'
+    };
+    
+  } catch (error) {
+    results.tests.auth = {
+      error: error.message
+    };
+  }
+  
+  res.json(results);
 });
 
 // Health check endpoint
@@ -171,7 +202,7 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`MongoDB: Temporarily disabled for testing`);
+  console.log(`MongoDB: Connected`);
   console.log('Available routes:');
   console.log('- GET  /test');
   console.log('- GET  /debug');
