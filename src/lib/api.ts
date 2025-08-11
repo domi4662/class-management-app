@@ -1,5 +1,10 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
+// Define proper types for API data
+interface ApiData {
+  [key: string]: unknown;
+}
+
 export const apiConfig = {
   baseURL: API_BASE_URL,
   endpoints: {
@@ -54,14 +59,14 @@ export const apiClient = {
     return this.request(endpoint, { method: 'GET' });
   },
 
-  post(endpoint: string, data: any) {
+  post(endpoint: string, data: ApiData) {
     return this.request(endpoint, {
       method: 'POST',
       body: JSON.stringify(data),
     });
   },
 
-  put(endpoint: string, data: any) {
+  put(endpoint: string, data: ApiData) {
     return this.request(endpoint, {
       method: 'PUT',
       body: JSON.stringify(data),
