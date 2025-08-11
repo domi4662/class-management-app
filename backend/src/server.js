@@ -45,20 +45,32 @@ app.get('/test', (req, res) => {
 
 // Debug route to check what's loaded
 app.get('/debug', (req, res) => {
+  const routes = [];
+  const middleware = [];
+  
+  app._router.stack.forEach(layer => {
+    if (layer.route) {
+      const methods = Object.keys(layer.route.methods);
+      methods.forEach(method => {
+        routes.push(`${method.toUpperCase()} ${layer.route.path}`);
+      });
+    } else if (layer.name) {
+      middleware.push(layer.name);
+    }
+  });
+  
   res.json({
     message: 'Debug information',
-    routes: app._router.stack.map(layer => {
-      if (layer.route) {
-        return `${Object.keys(layer.route.methods).join(',').toUpperCase()} ${layer.route.path}`;
-      }
-      return null;
-    }).filter(Boolean),
-    middleware: app._router.stack.map(layer => {
-      if (layer.name) {
-        return layer.name;
-      }
-      return null;
-    }).filter(Boolean)
+    routes: routes,
+    middleware: middleware,
+    routerStackLength: app._router.stack.length,
+    routerStack: app._router.stack.map((layer, index) => ({
+      index,
+      name: layer.name,
+      hasRoute: !!layer.route,
+      routePath: layer.route ? layer.route.path : null,
+      routeMethods: layer.route ? Object.keys(layer.route.methods) : null
+    }))
   });
 });
 
@@ -91,8 +103,25 @@ try {
   console.log('Auth router loaded:', typeof authRouter);
   console.log('Auth router stack:', authRouter.stack ? authRouter.stack.length : 'No stack');
   
+  // Log the auth router details
+  if (authRouter.stack) {
+    authRouter.stack.forEach((layer, index) => {
+      if (layer.route) {
+        console.log(`  Route ${index}: ${Object.keys(layer.route.methods).join(',').toUpperCase()} ${layer.route.path}`);
+      }
+    });
+  }
+  
   app.use('/api/auth', authRouter);
   console.log('✓ Auth routes mounted successfully');
+  
+  // Verify mounting by checking app._router.stack
+  console.log('App router stack length after mounting:', app._router.stack.length);
+  console.log('Last few layers in app router:');
+  app._router.stack.slice(-5).forEach((layer, index) => {
+    console.log(`  Layer ${app._router.stack.length - 5 + index}:`, layer.name || 'unnamed');
+  });
+  
 } catch (error) {
   console.error('✗ Failed to load auth routes:', error.message);
   console.error('Error stack:', error.stack);
